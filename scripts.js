@@ -1,75 +1,65 @@
-window.onload = function() {
-    var x = Math.floor(Math.random()*3);
-    texto = document.getElementById("aleatorio");
+var tomId, generos, peliculas;
+const bearerToken = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNzc0Yzk4ZmFlYzQ1YjZjYmZmZGU2YmNjYjVjZmNmNSIsInN1YiI6IjY2NmM1YWE1MzM4YzQwZTQ2OTI0YWVkNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.O62_GCm2m1-gc4JhRpN2jskJecM2LTeUqL7gSOXkcoU';
+const urlGenre = 'https://api.themoviedb.org/3/genre/movie/list?language=en'
+const urlTomCruise = 'https://api.themoviedb.org/3/search/person?query=Tom%20Cruise&include_adult=false&language=en-US&page=1'
+const urlMoviesTomCruise = 'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_people='
 
-    switch(x) {
-        case 0:
-            texto.innerHTML = '<p>Hola! Es un gusto verte aqui</p>';
-            texto.style.cssText = `
-                font-family: 'Rubik Mono One', sans-serif;
-                color: #F6D0B2;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-                font-size: 3em;
-                transition: color 0.3s ease, text-shadow 0.3s ease;
-            `;
-            break;
-        case 1:
-            texto.innerHTML = '<p>Bienvenido a mi trabajo!</p>';
-            texto.style.cssText = `
-            font-family: 'Bad Script', cursive;
-            color: #638475;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            font-size: 3em;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
-            `;
-            break;
-        case 2:
-            texto.innerHTML = '<p>Hola! Gracias por tu visita</p>';
-            texto.style.cssText = `
-            font-family: 'Pacifico', cursive;
-            color: #5B507A;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            font-size: 3em;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
-            `;
-            break;
+async function getGenre() {
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: bearerToken
     }
+  };
+  
+  data = await fetch(urlGenre, options)
+    .then(response => response.json())
+    .catch(err => console.error(err));
+
+  generos = data.genres 
 }
 
-async function getData() {
-    fetch("https://type.fit/api/quotes")
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(data) {
-      console.log(data);
-      if (data && data.length > 0) {
-        const parrafoQuote = document.getElementById("quote");
-
-        let max = 14; 
-        let i = Math.floor(Math.random() * max);
-        console.log(i);
-
-        parrafoQuote.textContent = data[i].text;
+async function getTomCruise(){
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: bearerToken
     }
-    });
+  };
+  
+  data = await fetch(urlTomCruise, options)
+    .then(response => response.json())
+    .catch(err => console.error(err));  
+
+  tomId = data.results[0].id
+}
+
+async function getMovies() {
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: bearerToken
+    }
+  };
+  
+  data = await fetch(urlMoviesTomCruise + tomId, options)
+    .then(response => response.json())
+    .catch(err => console.error(err));
+
+    peliculas = data.results.slice(0,10)
+}
+
+async function getData(){
+  await getTomCruise();
+  console.log(tomId)
+  await getGenre();
+  console.log(generos)
+  await getMovies();
+  console.log(peliculas)
 }
 
 async function visualizeData() {
-    fetch("https://api.restful-api.dev/objects")
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(data) {
-      console.log(data);
-      if (data && data.length > 0) {
-        const parrafoObject = document.getElementById("object");
-        
-        let max = 14; 
-        let i = Math.floor(Math.random() * max);
-        console.log(i);
-
-        parrafoObject.textContent = 'Tu necesitas un: ' + data[i].name;
-    }
-    });
 }
