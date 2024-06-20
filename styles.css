@@ -1,0 +1,108 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333333;
+    height: 60px;
+    padding: 0 1rem;
+    width: 100%;
+    border: solid #333333 1px;
+}
+
+#contenedorTitulo {
+    float: left;
+    width: 80%;
+    height: 60px;
+    padding-top: 2px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+div.img {
+    float:left;
+    width: 10%;
+    height: 60px;
+}
+
+#imagenLogo {
+    width: 60px;
+    height: 60px;
+    padding: 5px;
+    float: left;
+}
+
+#titulo {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 3em;
+    margin: 0;
+    color: #FFFFFF;
+}
+
+main {
+    background-color: #FFFFFF;
+    width: 80%;
+    height: 90%;
+    float: left;
+    border: 1px solid #FFFFFF;
+    padding: 5px;
+}
+
+#divAleatorio {
+    text-align: center;
+    margin: 5%;
+}
+
+#contenidoPrincipal {
+    font-size: 20px;
+    text-align: center;
+}
+
+#principalQuote, #principalObject {
+    margin: 50px;
+    font-size: 20px;
+    text-align: center;
+}
+
+aside {
+    background-color:#F0F0F0;
+    width: 20%;
+    height: 90%;
+    float: left;
+    border: 1px solid #668c97;
+    padding: 4px;
+}
+
+aside a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 10px; /* Espacio entre los botones */
+    text-decoration: none;
+    color: #333; /* Color de texto común */
+    border: 1px solid #ccc; /* Borde del botón */
+    border-radius: 4px; /* Bordes redondeados */
+    transition: background-color 0.3s, color 0.3s; /* Transición suave */
+}
+
+aside a:hover {
+    background-color: #f0f0f0; /* Color de fondo al pasar el mouse */
+    color: #555; /* Color de texto al pasar el mouse */
+}
+
+footer {
+    background-color:  #F8F8F8;
+    width: 100%;
+    height: 5%;
+    float: left;
+    border: solid #F8F8F8;
+    text-align: right;
+}
