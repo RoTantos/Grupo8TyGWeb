@@ -17,12 +17,17 @@ async function getGenre() {
       Authorization: bearerToken
     }
   };
-  
-  data = await fetch(urlGenre, options)
-    .then(response => response.json())
-    .catch(err => console.error(err)); 
 
-  generos = data.genres
+  try {
+    data = await fetch(urlGenre, options)
+    .then(response => response.json())
+
+    generos = data.genres
+    console.log('Generos obtenidos correctamente');
+  } catch (error) {
+      console.error('Error al obtener generos: ', error);
+  } 
+  
 }
 
 //obtengo el id de Tom Cruise
@@ -34,12 +39,16 @@ async function getTomCruise(){
       Authorization: bearerToken
     }
   };
-  
-  data = await fetch(urlTomCruise, options)
-    .then(response => response.json())
-    .catch(err => console.error(err));  
 
-  tomId = data.results[0].id
+  try {
+    data = await fetch(urlTomCruise, options)
+    .then(response => response.json())
+
+    tomId = data.results[0].id
+    console.log('Id de Tom Cruise: ', tomId)
+  } catch (error) {
+    console.error('Error al obtener id de Tom Cruise: ', error);
+  }
 }
 
 //obtengo todas las peliculas en donde trabajo Tom Cruise
@@ -51,26 +60,33 @@ async function getMovies() {
       Authorization: bearerToken
     }
   };
-  
-  data = await fetch(urlMoviesTomCruise + tomId, options)
+
+  try {
+    data = await fetch(urlMoviesTomCruise + tomId, options)
     .then(response => response.json())
     .catch(err => console.error(err));
-
-  return data.results.slice(0,10) //tomo solo 10 peliculas
+    
+    console.log('Peliculas obtenidas correctamente de TheMovieDB')
+    return data.results.slice(0,10) //tomo solo 10 peliculas
+  } catch (error) {
+    console.error('Error al obtener peliculas de TheMovieDB: ', error);
+  }
 }
 
 //STRAPI
 
 //obtengo los datos de TheMovieBD y guardo las peliculas en Strapi
 async function getData(){
-  await getTomCruise();
-  console.log(tomId)
-  await getGenre();
-  console.log(generos)
-  peliculasAPI = await getMovies();
-  console.log(peliculasAPI)
+  try {
+    await getTomCruise();
+    await getGenre();
+    peliculasAPI = await getMovies();
 
-  await savePeliculasStrapi(peliculasAPI)
+    await savePeliculasStrapi(peliculasAPI)
+    mostrarMensajeCarga();
+  } catch (error) {
+    console.log('Error al obtener todos los datos', error)
+  }
 }
 
 //guardo las peliculas en Strapi
@@ -83,30 +99,30 @@ async function savePeliculasStrapi(peliculas) {
   for (const pelicula of peliculas) {
     const generosNombre = getGeneroNombre(pelicula, generos);
     const data = {
-        titulo: pelicula.title,
-        sinopsis: pelicula.overview,
-        cantVotos: pelicula.vote_count,
-        promVotos: pelicula.vote_average,
-        genero: generosNombre,
-        imagen: `${pelicula.poster_path}`
+      titulo: pelicula.title,
+      sinopsis: pelicula.overview,
+      cantVotos: pelicula.vote_count,
+      promVotos: pelicula.vote_average,
+      genero: generosNombre,
+      imagen: `${pelicula.poster_path}`
     };
 
     const options = {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
-          Authorization: bearerTokenStrapi
+        'Content-Type': 'application/json',
+        Authorization: bearerTokenStrapi
       },
       body: JSON.stringify({ data })
     };
   
     try {
-        const response = await fetch('https://gestionweb.frlp.utn.edu.ar/api/g8-peliculas', options);
-        if (!response.ok) {
-            throw new Error('Error al guardar los datos:', response.statusText);
-        }
+      const response = await fetch('https://gestionweb.frlp.utn.edu.ar/api/g8-peliculas', options);
+      if (!response.ok) {
+        throw new Error('Error al guardar los datos:', response.statusText);
+      }
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
   }  
 }
@@ -114,21 +130,20 @@ async function savePeliculasStrapi(peliculas) {
 //elimino todas las peliculas de Strapi que cada vez que se guarden se eliminen los ingresos previos
 async function eliminarPeliculasStrapi() {
   try {
-      const peliculasStrapi = await getPeliculasStrapi();
-      const requests = peliculasStrapi.data.map(pelicula =>
-          fetch(`https://gestionweb.frlp.utn.edu.ar/api/g8-peliculas/${pelicula.id}`, {
-              method: 'DELETE',
-              headers: {
-                  'Authorization': bearerTokenStrapi
-              }
-          })
-      );
-      // Esperar a que todas las solicitudes DELETE se completen
-      await Promise.all(requests);
+    const peliculasStrapi = await getPeliculasStrapi();
+    const requests = peliculasStrapi.data.map(pelicula =>
+    fetch(`https://gestionweb.frlp.utn.edu.ar/api/g8-peliculas/${pelicula.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': bearerTokenStrapi
+      }
+    }));
+    // Esperar a que todas las solicitudes DELETE se completen
+    await Promise.all(requests);
 
-      console.log('Peliculas borradas correctamente en Strapi');
+    console.log('Peliculas borradas correctamente en Strapi previo a la carga actual');
   } catch (error) {
-      console.error('Error al borrar películas:', error);
+    console.error('Error al borrar películas:', error);
   }
 }
 
@@ -146,9 +161,23 @@ function getGeneroNombre(pelicula, generos) {
     .filter(name => name !== null);
 
   const resultado = nombresGeneros.join(' ');
-
-  console.log(resultado);
   return resultado || 'Género no especificado';
+}
+
+function mostrarMensajeCarga() {
+  var mensajeCarga = document.getElementById('mensaje-carga');
+  mensajeCarga.style.display = 'block';
+  setTimeout(function() {
+      mensajeCarga.style.opacity = '1';
+  }, 10); // Pequeño retraso para asegurar que la transición se aplique
+
+  // Ocultar el mensaje después de 3 seg
+  setTimeout(function() {
+      mensajeCarga.style.opacity = '0';
+      setTimeout(function() {
+          mensajeCarga.style.display = 'none';
+      }, 1000); // Esperar a que termine la transición antes de ocultar completamente
+  }, 3000);
 }
 
 //obtengo las peliculas desde Strapi
@@ -161,33 +190,42 @@ async function getPeliculasStrapi() {
     }
   };
   
-  data = await fetch('https://gestionweb.frlp.utn.edu.ar/api/g8-peliculas', options)
+  try {
+    data = await fetch('https://gestionweb.frlp.utn.edu.ar/api/g8-peliculas', options)
     .then(response => response.json())
     .catch(err => console.error(err)); 
-  console.log(data.data);
+    console.log('Datos recuperados de Strapi: ', data.data);
 
-  return data
+    return data
+  } catch (error) {
+    console.log('Error al recuperar datos de Strapi', error)
+  }
 }
 
 //visualizo en la pagina las peliculas obtenidas desde Strapi
 async function visualizePeliculasStrapi() {
-  const peliculasObtenidas = await getPeliculasStrapi()
+  try {
+    const peliculasObtenidas = await getPeliculasStrapi()
   
-  const peliculasContainer = document.getElementById('peliculas');
-  
-  peliculasObtenidas.data.forEach(pelicula => {
-    console.log(pelicula.attributes)
-    const peliculaDiv = document.createElement('div');
-    peliculaDiv.classList.add('pelicula');
-  
-    peliculaDiv.innerHTML = `
-      <h2 id='tituloPelicula'>${pelicula.attributes.titulo}</h2>
-      <p>${pelicula.attributes.sinopsis}</p>
-      <p>Votos: ${pelicula.attributes.cantVotos} | Promedio: ${pelicula.attributes.promVotos}</p>
-      <p>Género: ${pelicula.attributes.genero}</p>
-      <img src="https://image.tmdb.org/t/p/w500${pelicula.attributes.imagen}" alt="Poster de la película">
+    const peliculasContainer = document.getElementById('peliculas');
+    
+    peliculasObtenidas.data.forEach(pelicula => {
+      console.log(pelicula.attributes)
+      const peliculaDiv = document.createElement('div');
+      peliculaDiv.classList.add('pelicula');
+    
+      peliculaDiv.innerHTML = `
+        <h2 id='tituloPelicula'>${pelicula.attributes.titulo}</h2>
+        <p>${pelicula.attributes.sinopsis}</p>
+        <p>Votos: ${pelicula.attributes.cantVotos} | Promedio: ${pelicula.attributes.promVotos}</p>
+        <p>Género: ${pelicula.attributes.genero}</p>
+        <img src="https://image.tmdb.org/t/p/w500${pelicula.attributes.imagen}" alt="Poster de la película">
       `;
 
-    peliculasContainer.appendChild(peliculaDiv);
-  });
+      peliculasContainer.appendChild(peliculaDiv);
+    });
+    console.log('Datos visualizados desde Strapi con exito')
+  } catch (error) {
+    console.log('Datos no visualizados correctamente desde Strapi', error)
+  }
 }

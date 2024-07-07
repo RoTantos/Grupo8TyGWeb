@@ -82,7 +82,7 @@ aside {
     float: left;
     border: 1px solid #668c97;
     padding: 4px;
-    height: 450vh;
+    height: 460vh;
 }
 
 aside a {
@@ -94,6 +94,7 @@ aside a {
     border: 1px solid #ccc; 
     border-radius: 4px; 
     transition: background-color 0.3s, color 0.3s; 
+    width: 90%;
 }
 
 aside a:hover {
@@ -143,10 +144,28 @@ footer {
 .pelicula h2 {
     font-size: 1.5em;
     margin: 15px 0;
-    color: #e74c3c;
+    color: #6f5d3b;
 }
 
 .pelicula p {
     padding: 0 15px;
     margin-bottom: 15px;
+}
+
+#mensaje-carga {
+    display: none;
+    position: fixed;
+    top: 20px; 
+    left: 50%;
+    transform: translateX(-50%); 
+    background-color: #71675a;
+    color: white;
+    text-align: center;
+    padding: 10px 20px; 
+    font-size: 16px;
+    border-radius: 5px; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+    z-index: 1000;
+    opacity: 0; 
+    transition: opacity 1s ease-in-out;
 }
