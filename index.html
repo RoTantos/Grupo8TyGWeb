@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tp Individual</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <div id="mensaje-carga">Los datos fueron cargados correctamente.</div>
+        <header>
+            <div id="contenedorTitulo">
+                <div id="titulo">TP N° 2 - Grupo 8</div>
+            </div>
+            
+        </header>
+
+        <aside id="lateral">
+            <ul>
+                <li>
+                    <a href="#" onclick="getData(); return false;">Cargar datos de APIs</a>
+                </li>
+
+                <li>
+                    <a href="#" onclick="visualizePeliculasStrapi(); return false;">Visualizar datos</a>
+                </li>
+            </ul>
+        </aside>
+
+        <main id="principal">
+            <div id="peliculas" class="peliculas-container"></div>
+        </main>
+
+        <footer>
+            TyG Web - 2024
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
