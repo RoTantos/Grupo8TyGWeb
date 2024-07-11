@@ -200,15 +200,6 @@ async function getPeliculasStrapi() {
   }
 }
 
-/*function normalizeData(voteCount, voteAverage) {
-  // Asegurarnos de que ambos valores sean comparables
-  const maxVoteCount = 1000; // Asumir un máximo razonable de votos
-  const normalizedVoteCount = voteCount / maxVoteCount;
-  const normalizedVoteAverage = voteAverage / 10; // El promedio de votos está en una escala de 1 a 10
-  return [normalizedVoteCount, normalizedVoteAverage];
-}*/
-
-
 //visualizo en la pagina las peliculas obtenidas desde Strapi
 async function visualizePeliculasStrapi() {
 
@@ -266,5 +257,3 @@ async function visualizePeliculasStrapi() {
     console.log('Datos no visualizados correctamente desde Strapi', error)
   }
 }
-
-
