@@ -126,6 +126,7 @@ footer {
     max-width: 300px;
     text-align: center;
     transition: transform 0.3s;
+    margin-bottom: 2rem;
 }
 
 .pelicula:hover {
@@ -147,10 +148,21 @@ footer {
     color: #6f5d3b;
 }
 
-.pelicula p {
+.pelicula {
     padding: 0 15px;
     margin-bottom: 15px;
 }
+
+.pelicula p#votosProm {
+    color: black;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    border: 1px solid #333;
+    padding: 5px;
+    display: inline-block;
+}
+
+
 
 #mensaje-carga {
     display: none;
@@ -168,4 +180,9 @@ footer {
     z-index: 1000;
     opacity: 0; 
     transition: opacity 1s ease-in-out;
+}
+
+.chart-container {
+    width: 50%;
+    margin: auto;
 }

@@ -202,8 +202,18 @@ async function getPeliculasStrapi() {
   }
 }
 
+/*function normalizeData(voteCount, voteAverage) {
+  // Asegurarnos de que ambos valores sean comparables
+  const maxVoteCount = 1000; // Asumir un máximo razonable de votos
+  const normalizedVoteCount = voteCount / maxVoteCount;
+  const normalizedVoteAverage = voteAverage / 10; // El promedio de votos está en una escala de 1 a 10
+  return [normalizedVoteCount, normalizedVoteAverage];
+}*/
+
+
 //visualizo en la pagina las peliculas obtenidas desde Strapi
 async function visualizePeliculasStrapi() {
+
   try {
     const peliculasObtenidas = await getPeliculasStrapi()
   
@@ -213,19 +223,50 @@ async function visualizePeliculasStrapi() {
       console.log(pelicula.attributes)
       const peliculaDiv = document.createElement('div');
       peliculaDiv.classList.add('pelicula');
-    
+
+      const chartId = `chart-${pelicula.id}`; // ID único para cada gráfico
+      
+
       peliculaDiv.innerHTML = `
         <h2 id='tituloPelicula'>${pelicula.attributes.titulo}</h2>
-        <p>${pelicula.attributes.sinopsis}</p>
-        <p>Votos: ${pelicula.attributes.cantVotos} | Promedio: ${pelicula.attributes.promVotos}</p>
+        <p id='sinopsis'>${pelicula.attributes.sinopsis}</p>
+        <p id='votosProm'>Votos: ${pelicula.attributes.cantVotos} | Promedio: ${pelicula.attributes.promVotos}</p>
+        <div class="chart-container">
+          <canvas id="${chartId}"></canvas>
+        </div> 
         <p>Género: ${pelicula.attributes.genero}</p>
         <img src="https://image.tmdb.org/t/p/w500${pelicula.attributes.imagen}" alt="Poster de la película">
       `;
 
       peliculasContainer.appendChild(peliculaDiv);
-    });
+
+      // Crear gráfico de torta con datos normalizados
+      const ctx = document.getElementById(chartId).getContext('2d');
+
+      new Chart(ctx, {
+          type: 'pie',
+          data: {
+              labels: ['Votos Positivos', 'Votos Negativos'],
+              datasets: [{
+                  data: [pelicula.attributes.promVotos, (10 - pelicula.attributes.promVotos)],
+                  backgroundColor: ['#008f39', '#ff0000'],
+                  hoverBackgroundColor: ['#008f39', '#ff0000']
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              title: {
+                  display: true,
+                  text: 'Votos y Promedio'
+              }
+          }
+      });
+  })
     console.log('Datos visualizados desde Strapi con exito')
   } catch (error) {
     console.log('Datos no visualizados correctamente desde Strapi', error)
   }
 }
+
+
