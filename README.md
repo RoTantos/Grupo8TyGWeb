@@ -3,10 +3,10 @@
 
 **Trabajo práctico N° 2**
 
-**Asignatura: Tecnología y gestión web**
-**Año: 2024**
-**Comisión: S31**
-**Integrantes:**
+**Asignatura: Tecnología y gestión web**<br>
+**Año: 2024**<br>
+**Comisión: S31**<br>
+**Integrantes:**<br>
 
 - Tantos, Rocio
 - Pianelli, Felipe
